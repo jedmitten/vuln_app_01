@@ -2,8 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
-# from .views import SecureModelView
+
+### VULNERABLE VERSION ###
 from flask_admin.contrib.sqla import ModelView
+
+### FIXED VERSION ###
+# from .views import SecureModelView
 
 
 # init SQLAlchemy so we can use it later in our models
@@ -38,7 +42,9 @@ def create_app():
 
     # blueprint for administrative tasks
     admin = Admin(app, name='Vulnerable App', template_mode='bootstrap3')
-    # admin.add_view(SecureModelView(User, db.session))
+    ### VULNERABLE VERSION ###
     admin.add_view(ModelView(User, db.session))
+    ### FIXED VERSION ###
+    # admin.add_view(SecureModelView(User, db.session))
 
     return app
