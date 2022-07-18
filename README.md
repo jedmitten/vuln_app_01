@@ -3,6 +3,7 @@
 ## Selected Vulnerability
 This application contains a CSRF (cross-site request forgery) vulnerability that allows an attacker to trick an existing admin to toggle the "admin" boolean for an existing user. While there are actually other CSRF exploits an attacker can take advantage of in this example code, that is the case I am concentrating on.
 
+
 ## Description of Vulnerability
 * CSRF is an attack that forces an authenticated application user to perform an unauthorized action on behalf of an attacker
 * The vulnerability is present when an application does not validate that the authenticated user is intending to perform an action. A common form of CSRF exploits is forcing an administrator to modify an existing user or create a new one with administrative capabilities.
@@ -49,3 +50,41 @@ function put() {
 
 <body onload="put()">
 ```
+
+# Vulnerable App Usage
+* In this example code, the form is vulnerable to CSRF by default. The application is written with `flask`, a python framework for quick web and API development. 
+
+https://github.com/jedmitten/vuln_app_01/blob/main/project/__init__.py#L6-L7
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_admin import Admin
+
+### VULNERABLE VERSION ###
+from flask_admin.contrib.sqla import ModelView
+```
+
+By default, there is no security around form submissions that are automatically generated using `flask-admin` `ModelView` objects. The `ModelView` object takes a separate class and presents a view to create, read, update, or delete instances of the class (for example, Users)
+
+Using the simple `ModelView` does not include security as found in https://github.com/jedmitten/vuln_app_01/blob/main/project/__init__.py#L45-L46
+
+```python
+    admin.add_view(ModelView(User, db.session))
+```
+
+You can see the User class at https://github.com/jedmitten/vuln_app_01/blob/main/project/models.py
+
+`flask-admin` provides the functionality to add CSRF protection to forms using a `SecureForm` feature. See https://github.com/jedmitten/vuln_app_01/blob/main/project/views.py for the implementation. This creates a new model view called `SecureModelView` that implements the `SecureForm` when used.
+
+By updating `__init__.py` to import the `SecureModelView`
+```python
+from .views import SecureModelView
+```
+
+and then utilize that class
+```python
+    admin.add_view(SecureModelView(User, db.session))
+```
+
+CSRF protection is added to the User admin form
