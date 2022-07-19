@@ -3,7 +3,7 @@ source .venv/bin/activate
 
 # setup database if it does not exist with an admin and standard users
 
-DB_FILE="vuln_app.db"
+DB_FILE="./project/vuln_app.db"
 
 if [ ! -f "$DB_FILE" ]; then
     echo "Initializing database..."
@@ -13,3 +13,5 @@ fi
 if [ -f "$DB_FILE" ]; then
     echo "DB file exists: $DB_FILE"
 fi
+
+echo "Project initialization complete!"
