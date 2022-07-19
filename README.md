@@ -88,3 +88,12 @@ and then utilize that class
 ```
 
 CSRF protection is added to the User admin form
+
+
+# Running the Application
+1. Clone the repository
+1. From the repository directory, run `bash init.sh` to initalize the project (requires `python3`)
+1. Run `bash run.sh` to run the application. Then navigate to `http://127.0.0.1:/5000` with a browser
+1. There are 2 users setup during initialization
+   1. Admin: username: admin@example.com, password: adminpassword
+   1. Alice: username: alice@examplecom, password: monkey1
